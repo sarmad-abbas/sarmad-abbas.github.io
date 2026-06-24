@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sarmad Abbas — Cyber Security · PQC Research</title>
+<meta name="description" content="Sarmad Abbas — Cyber Security student at UMT. Penetration testing, malware analysis, and post-quantum cryptography research." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --void:#0A0D17;
+    --void-2:#0E1220;
+    --surface:#131829;
+    --surface-2:#171D31;
+    --line:#222A45;
+    --line-soft:#1A2138;
+    --ink:#ECEEF7;
+    --muted:#888FA6;
+    --muted-2:#616A86;
+    --quantum:#7B82FF;
+    --quantum-dim:#5A61D6;
+    --cipher:#46E5C0;
+    --warn:#F2B45C;
+    --r:14px;
+    --maxw:1080px;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+  body{
+    background:var(--void);
+    color:var(--ink);
+    font-family:"IBM Plex Sans",system-ui,sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+
+  ::selection{background:var(--quantum);color:#fff}
+
+  a{color:inherit;text-decoration:none}
+
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px}
+
+  .mono{font-family:"IBM Plex Mono",monospace}
+  .eyebrow{
+    font-family:"IBM Plex Mono",monospace;
+    font-size:12px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--quantum);
+    display:inline-flex;align-items:center;gap:10px;
+  }
+  .eyebrow::before{content:"";width:22px;height:1px;background:var(--quantum);display:inline-block}
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:fixed;top:0;left:0;right:0;z-index:50;
+    backdrop-filter:blur(12px);
+    background:rgba(10,13,23,.72);
+    border-bottom:1px solid transparent;
+    transition:border-color .3s,background .3s;
+  }
+  nav.scrolled{border-bottom:1px solid var(--line-soft)}
+  .nav-inner{
+    max-width:var(--maxw);margin:0 auto;padding:16px 28px;
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .brand{font-family:"IBM Plex Mono",monospace;font-size:15px;font-weight:500;letter-spacing:.02em;color:var(--ink)}
+  .brand b{color:var(--quantum);font-weight:500}
+  .nav-links{display:flex;gap:30px}
+  .nav-links a{
+    font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--muted);
+    transition:color .2s;position:relative;
+  }
+  .nav-links a:hover{color:var(--ink)}
+  .nav-toggle{display:none;background:none;border:none;color:var(--ink);cursor:pointer}
+  @media(max-width:760px){
+    .nav-links{
+      position:fixed;inset:60px 0 auto 0;flex-direction:column;gap:0;
+      background:var(--void-2);border-bottom:1px solid var(--line);
+      max-height:0;overflow:hidden;transition:max-height .35s ease;
+    }
+    .nav-links.open{max-height:340px}
+    .nav-links a{padding:15px 28px;border-top:1px solid var(--line-soft)}
+    .nav-toggle{display:block}
+  }
+
+  /* ---------- HERO ---------- */
+  header{position:relative;min-height:100vh;display:flex;align-items:center;padding:120px 0 80px}
+  #lattice{position:absolute;inset:0;width:100%;height:100%;z-index:0}
+  .hero-fade{position:absolute;inset:0;z-index:1;pointer-events:none;
+    background:radial-gradient(120% 90% at 75% 30%,transparent 30%,var(--void) 78%);}
+  .hero-inner{position:relative;z-index:2;width:100%}
+  .hero-inner .eyebrow{margin-bottom:26px}
+  h1{
+    font-family:"Space Grotesk",sans-serif;
+    font-weight:700;
+    font-size:clamp(44px,8.5vw,92px);
+    line-height:.98;
+    letter-spacing:-.02em;
+    margin-bottom:22px;
+  }
+  h1 .l2{color:var(--muted)}
+  .role{
+    font-family:"IBM Plex Mono",monospace;
+    font-size:clamp(13px,2.2vw,16px);
+    color:var(--ink);
+    margin-bottom:26px;letter-spacing:.01em;
+  }
+  .role .sep{color:var(--quantum);margin:0 10px}
+  .lede{max-width:540px;color:var(--muted);font-size:17px;margin-bottom:38px}
+  .lede b{color:var(--ink);font-weight:600}
+  .cta-row{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+  .btn{
+    font-family:"IBM Plex Mono",monospace;font-size:13px;letter-spacing:.02em;
+    padding:13px 22px;border-radius:10px;cursor:pointer;
+    display:inline-flex;align-items:center;gap:9px;transition:all .2s;border:1px solid transparent;
+  }
+  .btn-primary{background:var(--quantum);color:#0A0D17;font-weight:500}
+  .btn-primary:hover{background:#9197ff;transform:translateY(-2px)}
+  .btn-ghost{border-color:var(--line);color:var(--ink)}
+  .btn-ghost:hover{border-color:var(--quantum);color:var(--quantum)}
+  .hero-socials{display:flex;gap:22px;margin-top:42px}
+  .hero-socials a{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--muted);transition:color .2s}
+  .hero-socials a:hover{color:var(--cipher)}
+
+  /* ---------- SECTION SCAFFOLD ---------- */
+  section{padding:96px 0;position:relative}
+  .sec-head{margin-bottom:54px;max-width:620px}
+  .sec-head h2{
+    font-family:"Space Grotesk",sans-serif;font-weight:600;
+    font-size:clamp(28px,4.4vw,40px);letter-spacing:-.015em;margin-top:16px;line-height:1.1;
+  }
+  .sec-head p{color:var(--muted);margin-top:16px;font-size:16px}
+
+  /* ---------- ABOUT ---------- */
+  .about-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:54px;align-items:start}
+  @media(max-width:820px){.about-grid{grid-template-columns:1fr;gap:40px}}
+  .about-body p{color:var(--muted);margin-bottom:18px;font-size:16.5px}
+  .about-body p b{color:var(--ink);font-weight:600}
+  .about-body .key{color:var(--cipher);font-weight:500}
+  .stats{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .stat{
+    background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--r);
+    padding:20px 18px;transition:border-color .25s,transform .25s;
+  }
+  .stat:hover{border-color:var(--quantum);transform:translateY(-3px)}
+  .stat .n{font-family:"Space Grotesk",sans-serif;font-size:30px;font-weight:600;color:var(--ink);line-height:1}
+  .stat .n span{color:var(--quantum)}
+  .stat .k{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--muted);margin-top:9px;letter-spacing:.04em;text-transform:uppercase}
+
+  /* ---------- SKILLS ---------- */
+  .skills-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  @media(max-width:820px){.skills-grid{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:540px){.skills-grid{grid-template-columns:1fr}}
+  .skill-card{
+    background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--r);
+    padding:24px 22px;transition:border-color .25s,background .25s;
+  }
+  .skill-card:hover{border-color:var(--line);background:var(--surface-2)}
+  .skill-card .cat{
+    font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--quantum);margin-bottom:16px;display:flex;align-items:center;gap:9px;
+  }
+  .skill-card .cat .dot{width:6px;height:6px;border-radius:50%;background:var(--quantum)}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{
+    font-size:13px;color:var(--ink);background:var(--void-2);
+    border:1px solid var(--line-soft);border-radius:7px;padding:6px 11px;transition:all .2s;
+  }
+  .skill-card:hover .chip{border-color:var(--line)}
+
+  /* ---------- PROJECTS ---------- */
+  .featured-label{
+    font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--cipher);display:flex;align-items:center;gap:9px;margin-bottom:22px;
+  }
+  .featured-label::before{content:"";width:18px;height:1px;background:var(--cipher)}
+  .proj-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:760px){.proj-grid{grid-template-columns:1fr}}
+  .proj{
+    background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--r);
+    padding:26px 24px;position:relative;overflow:hidden;transition:border-color .3s,transform .3s;
+    display:flex;flex-direction:column;
+  }
+  .proj::before{
+    content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--quantum);
+    transform:scaleY(0);transform-origin:top;transition:transform .35s;
+  }
+  .proj:hover{border-color:var(--line);transform:translateY(-4px)}
+  .proj:hover::before{transform:scaleY(1)}
+  .proj.research::before{background:var(--cipher)}
+  .proj-top{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:14px}
+  .proj h3{font-family:"Space Grotesk",sans-serif;font-weight:600;font-size:19px;letter-spacing:-.01em;line-height:1.25}
+  .proj .meta{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);white-space:nowrap;padding-top:4px}
+  .proj .status{
+    font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;
+    color:var(--cipher);display:inline-flex;align-items:center;gap:7px;margin-bottom:13px;
+  }
+  .proj .status .pulse{width:7px;height:7px;border-radius:50%;background:var(--cipher);box-shadow:0 0 0 0 rgba(70,229,192,.5);animation:pulse 2.2s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(70,229,192,.45)}70%{box-shadow:0 0 0 7px rgba(70,229,192,0)}100%{box-shadow:0 0 0 0 rgba(70,229,192,0)}}
+  @media(prefers-reduced-motion:reduce){.proj .status .pulse{animation:none}}
+  .proj p{color:var(--muted);font-size:14.5px;margin-bottom:18px;flex-grow:1}
+  .proj .tags{display:flex;flex-wrap:wrap;gap:7px}
+  .proj .tags span{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);border:1px solid var(--line-soft);border-radius:6px;padding:4px 9px}
+
+  /* ---------- TIMELINE (exp / education) ---------- */
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:54px}
+  @media(max-width:820px){.two-col{grid-template-columns:1fr;gap:44px}}
+  .col-title{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--quantum);margin-bottom:26px}
+  .tl-item{position:relative;padding-left:26px;padding-bottom:28px;border-left:1px solid var(--line)}
+  .tl-item:last-child{padding-bottom:0}
+  .tl-item::before{content:"";position:absolute;left:-5px;top:4px;width:9px;height:9px;border-radius:50%;background:var(--void);border:2px solid var(--quantum)}
+  .tl-item .role-t{font-family:"Space Grotesk",sans-serif;font-weight:600;font-size:16.5px}
+  .tl-item .org{font-size:14px;color:var(--muted);margin:3px 0 6px}
+  .tl-item .date{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--quantum);margin-bottom:9px}
+  .tl-item ul{list-style:none;margin-top:6px}
+  .tl-item li{color:var(--muted);font-size:14px;padding-left:16px;position:relative;margin-bottom:5px}
+  .tl-item li::before{content:"–";position:absolute;left:0;color:var(--quantum)}
+  .coursework{margin-top:8px;font-size:13.5px;color:var(--muted)}
+  .coursework b{color:var(--ink);font-weight:500}
+
+  /* ---------- CERTS + LEADERSHIP ---------- */
+  .cert-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+  @media(max-width:640px){.cert-grid{grid-template-columns:1fr}}
+  .cert{
+    background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--r);padding:20px 22px;
+    display:flex;gap:16px;align-items:flex-start;transition:border-color .25s}
+  .cert:hover{border-color:var(--quantum)}
+  .cert .ic{font-family:"IBM Plex Mono",monospace;color:var(--quantum);font-size:13px;border:1px solid var(--line);border-radius:8px;padding:7px 9px;flex-shrink:0}
+  .cert .t{font-weight:600;font-size:15px;line-height:1.3}
+  .cert .s{font-size:13px;color:var(--muted);margin-top:4px}
+
+  /* ---------- CONTACT ---------- */
+  .contact{text-align:center;padding:110px 0}
+  .contact .eyebrow{justify-content:center;margin-bottom:24px}
+  .contact h2{font-family:"Space Grotesk",sans-serif;font-weight:600;font-size:clamp(30px,5.5vw,52px);letter-spacing:-.02em;margin-bottom:20px;line-height:1.05}
+  .contact h2 span{color:var(--quantum)}
+  .contact p{color:var(--muted);max-width:460px;margin:0 auto 38px;font-size:16.5px}
+  .contact-links{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+
+  /* ---------- FOOTER ---------- */
+  footer{border-top:1px solid var(--line-soft);padding:34px 0}
+  .foot-inner{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+  .foot-inner .mono{font-size:12.5px;color:var(--muted-2)}
+  .foot-inner .blink{color:var(--cipher);animation:blink 1.3s step-end infinite}
+  @keyframes blink{50%{opacity:0}}
+  @media(prefers-reduced-motion:reduce){.foot-inner .blink{animation:none}}
+
+  /* reveal */
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.in{opacity:1;transform:none}
+  @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <div class="nav-inner">
+    <a href="#top" class="brand">sarmad<b>.</b>abbas</a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+    <div class="nav-links" id="navLinks">
+      <a href="#about">about</a>
+      <a href="#skills">skills</a>
+      <a href="#work">work</a>
+      <a href="#path">path</a>
+      <a href="#contact">contact</a>
+    </div>
+  </div>
+</nav>
+
+<header id="top">
+  <canvas id="lattice"></canvas>
+  <div class="hero-fade"></div>
+  <div class="wrap hero-inner">
+    <span class="eyebrow">Cyber Security · UMT</span>
+    <h1><span id="decrypt" data-text="SARMAD ABBAS">SARMAD ABBAS</span><br><span class="l2">/ security &amp; cryptography</span></h1>
+    <div class="role">Penetration Testing<span class="sep">·</span>Malware Analysis<span class="sep">·</span>Post-Quantum Cryptography</div>
+    <p class="lede">Cyber security undergraduate building hands-on offensive-security skill and researching the cryptography that has to survive the <b>quantum era</b>. Currently designing post-quantum delivery systems with Shaheen Shield and mapping mobile malware to MITRE ATT&amp;CK.</p>
+    <div class="cta-row">
+      <a href="#work" class="btn btn-primary">View work →</a>
+      <a href="#contact" class="btn btn-ghost">Get in touch</a>
+    </div>
+    <div class="hero-socials">
+      <a href="https://github.com/sarmad-abbas" target="_blank" rel="noopener">GitHub ↗</a>
+      <a href="https://www.linkedin.com/in/sarmad-abbas" target="_blank" rel="noopener">LinkedIn ↗</a>
+      <a href="mailto:sarmadabbas2004@gmail.com">Email ↗</a>
+    </div>
+  </div>
+</header>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="wrap about-grid">
+    <div class="about-body reveal">
+      <span class="eyebrow">About</span>
+      <h2 style="font-family:'Space Grotesk';font-weight:600;font-size:clamp(26px,4vw,36px);letter-spacing:-.015em;margin:16px 0 24px;line-height:1.12">I break things to understand how to defend them.</h2>
+      <p>I'm a Cyber Security undergraduate at the <b>University of Management &amp; Technology</b>, focused on offensive security and the next frontier of cryptography. My hands-on work runs across web application penetration testing, network security, and Android malware analysis.</p>
+      <p>Right now I'm researching <span class="key">Post-Quantum Cryptography</span> in collaboration with Shaheen Shield — an entirely new branch of mathematics built to defend against threats today's encryption won't survive. I work the practical side too: dissecting malware in Wireshark, chaining exploits in lab environments, and aligning everything to OWASP and MITRE ATT&amp;CK.</p>
+      <p>I'm looking for security internships where the priority is growth and real research, not just a paycheck.</p>
+    </div>
+    <div class="stats reveal">
+      <div class="stat"><div class="n">3.84<span>.</span></div><div class="k">CGPA</div></div>
+      <div class="stat"><div class="n">3.95<span>.</span></div><div class="k">Current SGPA</div></div>
+      <div class="stat"><div class="n">3<span>×</span></div><div class="k">Merit List Awards</div></div>
+      <div class="stat"><div class="n">70<span>%</span></div><div class="k">Merit Scholarship</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Toolkit</span>
+      <h2>Skills, grouped by where I actually use them.</h2>
+    </div>
+    <div class="skills-grid">
+      <div class="skill-card reveal">
+        <div class="cat"><span class="dot"></span>Offensive Security</div>
+        <div class="chips">
+          <span class="chip">Burp Suite</span><span class="chip">Metasploit</span><span class="chip">Nmap</span>
+          <span class="chip">Wireshark</span><span class="chip">Kali Linux</span><span class="chip">Hashcat</span>
+          <span class="chip">Dirbuster</span><span class="chip">Wifite</span><span class="chip">Crunch</span>
+        </div>
+      </div>
+      <div class="skill-card reveal">
+        <div class="cat"><span class="dot"></span>Frameworks &amp; Method</div>
+        <div class="chips">
+          <span class="chip">OWASP Top 10</span><span class="chip">MITRE ATT&amp;CK</span>
+          <span class="chip">ATT&amp;CK Mobile</span><span class="chip">PTES</span>
+          <span class="chip">Vulnerability Assessment</span>
+        </div>
+      </div>
+      <div class="skill-card reveal">
+        <div class="cat"><span class="dot"></span>Networking</div>
+        <div class="chips">
+          <span class="chip">TCP/IP</span><span class="chip">CCNA Fundamentals</span>
+          <span class="chip">Subnetting</span><span class="chip">OSI Model</span>
+          <span class="chip">Traffic Analysis</span>
+        </div>
+      </div>
+      <div class="skill-card reveal">
+        <div class="cat"><span class="dot"></span>Quantum &amp; Crypto</div>
+        <div class="chips">
+          <span class="chip">Post-Quantum Cryptography</span><span class="chip">IBM Qiskit</span>
+          <span class="chip">Quantum Circuits</span><span class="chip">Quantum ML</span><span class="chip">Cryptography</span>
+        </div>
+      </div>
+      <div class="skill-card reveal">
+        <div class="cat"><span class="dot"></span>Programming</div>
+        <div class="chips">
+          <span class="chip">Python</span><span class="chip">C</span><span class="chip">C++</span>
+        </div>
+      </div>
+      <div class="skill-card reveal">
+        <div class="cat"><span class="dot"></span>Lab Environments</div>
+        <div class="chips">
+          <span class="chip">OWASP Juice Shop</span><span class="chip">bWAPP / BeeBox</span><span class="chip">Kali Linux</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WORK -->
+<section id="work">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Work</span>
+      <h2>Research and projects.</h2>
+      <p>Where most student portfolios stop at lab exercises, the research is what I'm proudest of — it's work very few undergraduates get to touch.</p>
+    </div>
+
+    <div class="featured-label reveal">Research</div>
+    <div class="proj-grid" style="margin-bottom:42px">
+      <article class="proj research reveal">
+        <div class="status"><span class="pulse"></span>Ongoing</div>
+        <div class="proj-top">
+          <h3>Post-Quantum Cryptography</h3>
+          <span class="meta">Shaheen Shield</span>
+        </div>
+        <p>Researching quantum-resistant cryptography within Shaheen Shield's PQC program. Designed the service-delivery architecture defining how post-quantum services reach end clients, and studying NIST-standardized lattice schemes against the "harvest now, decrypt later" threat model.</p>
+        <div class="tags"><span>PQC</span><span>Lattice Crypto</span><span>System Architecture</span></div>
+      </article>
+      <article class="proj research reveal">
+        <div class="status"><span class="pulse"></span>Ongoing</div>
+        <div class="proj-top">
+          <h3>Quantum Computing &amp; QML</h3>
+          <span class="meta">Self-directed</span>
+        </div>
+        <p>Building and simulating quantum circuits in IBM Qiskit to study superposition, entanglement, and gate operations. Extending into Quantum Machine Learning and hybrid quantum-classical models.</p>
+        <div class="tags"><span>IBM Qiskit</span><span>Quantum Circuits</span><span>QML</span></div>
+      </article>
+    </div>
+
+    <div class="featured-label reveal" style="color:var(--quantum)"><span style="background:var(--quantum)"></span>Security Projects</div>
+    <div class="proj-grid">
+      <article class="proj reveal">
+        <div class="status"><span class="pulse"></span>Ongoing</div>
+        <div class="proj-top">
+          <h3>Android Malware Analysis &amp; ATT&amp;CK Mapping</h3>
+          <span class="meta">2025</span>
+        </div>
+        <p>Analyzing Android malware to surface Command-and-Control patterns, persistence techniques, and indicators of compromise. Mapping observed behavior to MITRE ATT&amp;CK Mobile and inspecting suspected C2 channels in Wireshark.</p>
+        <div class="tags"><span>Malware Analysis</span><span>MITRE ATT&amp;CK</span><span>Wireshark</span></div>
+      </article>
+      <article class="proj reveal">
+        <div class="proj-top">
+          <h3>Web Application Penetration Testing</h3>
+          <span class="meta">2024–25</span>
+        </div>
+        <p>End-to-end testing against OWASP Juice Shop and bWAPP across recon, exploitation, and post-exploitation. Toolchain: Burp Suite, Nmap, Metasploit, Hashcat — methodology aligned to OWASP Top 10 and PTES.</p>
+        <div class="tags"><span>Burp Suite</span><span>Metasploit</span><span>OWASP</span><span>PTES</span></div>
+      </article>
+      <article class="proj reveal">
+        <div class="proj-top">
+          <h3>Windows Persistence Mechanisms</h3>
+          <span class="meta">2024</span>
+        </div>
+        <p>Studied persistence techniques — registry run keys, scheduled tasks, services, startup folders — under an industry specialist, paired with the blue-team detection and mitigation strategies for each.</p>
+        <div class="tags"><span>Ethical Hacking</span><span>Windows</span><span>Detection</span></div>
+      </article>
+      <article class="proj reveal">
+        <div class="proj-top">
+          <h3>Autonomous Obstacle-Avoiding Car</h3>
+          <span class="meta">2024</span>
+        </div>
+        <p>Designed and built a functional autonomous vehicle for a Digital Logic Design project, integrating live sensor input with logic-based decision making.</p>
+        <div class="tags"><span>Digital Logic</span><span>Embedded</span><span>Sensors</span></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- PATH: experience + education -->
+<section id="path">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Path</span>
+      <h2>Experience &amp; education.</h2>
+    </div>
+    <div class="two-col">
+      <div class="reveal">
+        <div class="col-title">Experience</div>
+        <div class="tl-item">
+          <div class="role-t">Peer Tutor</div>
+          <div class="org">University of Management &amp; Technology</div>
+          <div class="date">OCT 2024 – FEB 2025</div>
+          <ul>
+            <li>Delivered one-on-one and small-group tutoring on course-aligned curriculum</li>
+            <li>Designed targeted study plans and exam strategies around individual skill gaps</li>
+            <li>Built student confidence, contributing to measurable grade improvements</li>
+          </ul>
+        </div>
+        <div class="tl-item">
+          <div class="role-t">Teaching Assistant</div>
+          <div class="org">University of Management &amp; Technology</div>
+          <div class="date">2024</div>
+          <ul>
+            <li>Supported faculty with material prep, in-class help, and visual aids</li>
+            <li>Maintained clear communication to keep a structured learning environment</li>
+          </ul>
+        </div>
+        <div class="col-title" style="margin-top:40px">Leadership</div>
+        <div class="tl-item">
+          <div class="role-t">CTF Organizer — Techverse</div>
+          <div class="org">UMT flagship technology event</div>
+          <div class="date">2024</div>
+          <ul>
+            <li>Co-organized a Capture-The-Flag competition: challenge curation and live participant support</li>
+            <li>Also competed in the Business &amp; Innovation track</li>
+          </ul>
+        </div>
+      </div>
+      <div class="reveal">
+        <div class="col-title">Education</div>
+        <div class="tl-item">
+          <div class="role-t">BS Cyber Security</div>
+          <div class="org">University of Management &amp; Technology, Lahore</div>
+          <div class="date">FEB 2024 – FEB 2028 (EXPECTED)</div>
+          <div class="coursework"><b>CGPA 3.84</b> · SGPA 3.95 · 3× Merit List · Dean's List Fall 2024</div>
+          <div class="coursework" style="margin-top:10px"><b>Coursework:</b> Information Security · Data Structures &amp; Algorithms (A+) · Object-Oriented Programming · Digital Logic Design · Computer Networks · Wireless &amp; Mobile Security · Entrepreneurship &amp; Innovation</div>
+        </div>
+        <div class="col-title" style="margin-top:40px">Certifications &amp; Training</div>
+        <div class="cert-grid">
+          <div class="cert"><div class="ic">AWS</div><div><div class="t">Solutions Architect – Associate</div><div class="s">Coursework · GeeksforGeeks</div></div></div>
+          <div class="cert"><div class="ic">NET</div><div><div class="t">CCNA Networking Fundamentals</div><div class="s">Self-study · Jeremy's IT Lab</div></div></div>
+          <div class="cert"><div class="ic">PEN</div><div><div class="t">Web App Penetration Testing</div><div class="s">Self-directed lab work</div></div></div>
+          <div class="cert"><div class="ic">WIN</div><div><div class="t">Windows Persistence for Ethical Hacking</div><div class="s">Industry specialist mentorship</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="contact">
+  <div class="wrap reveal">
+    <span class="eyebrow">Contact</span>
+    <h2>Let's build something <span>secure.</span></h2>
+    <p>Open to security internships and research collaboration — especially around pentesting, malware analysis, or post-quantum cryptography.</p>
+    <div class="contact-links">
+      <a href="mailto:sarmadabbas2004@gmail.com" class="btn btn-primary">sarmadabbas2004@gmail.com</a>
+      <a href="https://www.linkedin.com/in/sarmad-abbas" target="_blank" rel="noopener" class="btn btn-ghost">LinkedIn ↗</a>
+      <a href="https://github.com/sarmad-abbas" target="_blank" rel="noopener" class="btn btn-ghost">GitHub ↗</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-inner">
+    <span class="mono">© 2026 Sarmad Abbas · Lahore, Pakistan</span>
+    <span class="mono">designed &amp; secured <span class="blink">█</span></span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---- nav ---- */
+  var nav = document.getElementById("nav");
+  var navToggle = document.getElementById("navToggle");
+  var navLinks = document.getElementById("navLinks");
+  window.addEventListener("scroll", function(){
+    nav.classList.toggle("scrolled", window.scrollY > 24);
+  }, {passive:true});
+  navToggle.addEventListener("click", function(){ navLinks.classList.toggle("open"); });
+  navLinks.querySelectorAll("a").forEach(function(a){
+    a.addEventListener("click", function(){ navLinks.classList.remove("open"); });
+  });
+
+  /* ---- reveal on scroll ---- */
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target);} });
+  }, {threshold:0.12});
+  document.querySelectorAll(".reveal").forEach(function(el){ io.observe(el); });
+
+  /* ---- decrypt name ---- */
+  var dEl = document.getElementById("decrypt");
+  if(dEl && !reduce){
+    var target = dEl.getAttribute("data-text");
+    var glyphs = "ABCDEFGHJKLMNPQRSTUVWXYZ0123456789#%&/<>";
+    var frame = 0;
+    function step(){
+      var out = "";
+      for(var i=0;i<target.length;i++){
+        if(target[i]===" "){ out+=" "; continue; }
+        if(i < frame/3){ out += target[i]; }
+        else { out += glyphs[Math.floor(Math.random()*glyphs.length)]; }
+      }
+      dEl.textContent = out;
+      frame++;
+      if(frame/3 < target.length+1){ setTimeout(step, 38); }
+      else { dEl.textContent = target; }
+    }
+    setTimeout(step, 220);
+  }
+
+  /* ---- lattice field (PQC signature) ---- */
+  var canvas = document.getElementById("lattice");
+  var ctx = canvas.getContext("2d");
+  var pts = [], W, H, DPR = Math.min(window.devicePixelRatio||1, 2);
+  var mouse = {x:-9999, y:-9999};
+  var GAP = 46;
+
+  function build(){
+    W = canvas.clientWidth; H = canvas.clientHeight;
+    canvas.width = W*DPR; canvas.height = H*DPR;
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+    pts = [];
+    var cols = Math.ceil(W/GAP)+2, rows = Math.ceil(H/GAP)+2;
+    for(var y=0;y<rows;y++){
+      for(var x=0;x<cols;x++){
+        var bx = x*GAP, by = y*GAP;
+        pts.push({ ox:bx, oy:by, x:bx, y:by,
+          ph: Math.random()*Math.PI*2,
+          sp: 0.4 + Math.random()*0.6 });
+      }
+    }
+  }
+
+  function draw(t){
+    ctx.clearRect(0,0,W,H);
+    var i, p, dx, dy, dist, m;
+    /* update + draw points */
+    for(i=0;i<pts.length;i++){
+      p = pts[i];
+      if(!reduce){
+        p.x = p.ox + Math.sin(t*0.0005*p.sp + p.ph)*4;
+        p.y = p.oy + Math.cos(t*0.0005*p.sp + p.ph)*4;
+      }
+      dx = p.x - mouse.x; dy = p.y - mouse.y;
+      dist = Math.sqrt(dx*dx+dy*dy);
+      m = dist < 130 ? (1 - dist/130) : 0;
+      var r = 1.1 + m*2.2;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, r, 0, Math.PI*2);
+      ctx.fillStyle = m>0 ? "rgba(123,130,255,"+(0.35+m*0.55)+")" : "rgba(99,107,150,0.42)";
+      ctx.fill();
+    }
+    /* draw lattice lines near cursor */
+    if(mouse.x > -9000){
+      for(i=0;i<pts.length;i++){
+        p = pts[i];
+        dx = p.x-mouse.x; dy = p.y-mouse.y;
+        if(Math.abs(dx)>GAP*2.4 || Math.abs(dy)>GAP*2.4) continue;
+        dist = Math.sqrt(dx*dx+dy*dy);
+        if(dist<130){
+          var a = (1-dist/130)*0.5;
+          /* connect to right and bottom neighbor for grid feel */
+          var right = pts[i+1], down = pts[i+ (Math.ceil(W/GAP)+2)];
+          if(right && Math.abs(right.oy-p.oy)<1){ line(p,right,a); }
+          if(down){ line(p,down,a); }
+        }
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+  function line(a,b,al){
+    ctx.beginPath();
+    ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y);
+    ctx.strokeStyle = "rgba(123,130,255,"+al+")";
+    ctx.lineWidth = 0.6;
+    ctx.stroke();
+  }
+
+  window.addEventListener("mousemove", function(e){
+    var rect = canvas.getBoundingClientRect();
+    mouse.x = e.clientX - rect.left;
+    mouse.y = e.clientY - rect.top;
+  });
+  window.addEventListener("mouseleave", function(){ mouse.x=-9999; mouse.y=-9999; });
+  var rt;
+  window.addEventListener("resize", function(){ clearTimeout(rt); rt=setTimeout(build,180); });
+
+  build();
+  requestAnimationFrame(draw);
+})();
+</script>
+</body>
+</html>
